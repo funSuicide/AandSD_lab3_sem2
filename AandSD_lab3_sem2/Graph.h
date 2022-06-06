@@ -27,7 +27,7 @@ class Graph {
 			if (it.edgeSource == source && it.edgeDest == dest)
 				return it.edgeWeight;
 		}
-		return 0;
+		return INT_MAX * 1.0;
 	}
 public:
 	void AddVertex(City& tmpVertex) {
@@ -119,6 +119,45 @@ public:
 					stack.push(i);
 				}
 			}
+		}
+	}
+
+	void BelmanFord(City& citySource, City& cityDes){
+		int INF = INT_MAX;
+		std::vector<int> vecFirst(vertex.size(), INF);
+		int start = GetIdVertex(citySource);
+		int end = GetIdVertex(cityDes);
+		if (start == -1 || end == -1){
+			throw "Error!";
+		}
+
+		vecFirst[start] = 0;
+		std::vector<int> vecSecond(vertex.size(), -1);
+		for (;;) {
+			bool any = false;
+			for (int j = 0; j < edges.size(); ++j)
+				if (vecSecond[edges[j].edgeSource] < INF)
+					if (vecFirst[edges[j].edgeDest] > vecFirst[edges[j].edgeSource] + edges[j].edgeWeight) {
+						vecFirst[edges[j].edgeDest] = vecFirst[edges[j].edgeSource] + edges[j].edgeWeight;
+						vecSecond[edges[j].edgeDest] = edges[j].edgeSource;
+						any = true;
+					}
+			if (!any)  break;
+		}
+
+		if (vecFirst[end] == INF)
+			std::cout << "No path from (" << vertex[start].GetName() << ") to (" << vertex[end].GetName() << ").";
+		else {
+			std::vector<int> path;
+			for (int cur = end; cur != -1; cur = vecSecond[cur]) {
+				path.push_back(cur);
+			}
+			reverse(path.begin(), path.end());
+			std::cout << "Path from (" << vertex[start].GetName() << ") to (" << vertex[end].GetName() << "):  ";
+			for (size_t i = 0; i < path.size(); ++i)
+				std::cout << "( " << vertex[path[i]].GetName() << " )-->";
+			std::cout << std::endl;
+			std::cout << "Summary lenght way is : " << vecSecond[end] << std::endl;
 		}
 	}
 };
