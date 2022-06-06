@@ -12,4 +12,7 @@ public:
 	void PrintCity() const {
 		std::cout << "City: " << nameCity << "(" << countResidents << ")";
 	}
+	bool operator == (const City& tmpCity) {
+		return ((countResidents == tmpCity.countResidents) && (nameCity == tmpCity.nameCity));
+	}
 };
