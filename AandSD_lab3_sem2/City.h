@@ -15,4 +15,7 @@ public:
 	bool operator == (const City& tmpCity) {
 		return ((countResidents == tmpCity.countResidents) && (nameCity == tmpCity.nameCity));
 	}
+	std::string GetName() const {
+		return nameCity;
+	}
 };

@@ -1,6 +1,7 @@
 #include <vector>
 #include "City.h"
 #include <algorithm>
+#include <stack>
 
 class Graph {
 	std::vector<City>vertex;
@@ -94,6 +95,30 @@ public:
 				std::cout << "LenghtWay: " << GetLenghWays(i, it) << " ]  ";
 			}
 			std::cout << std::endl;
+		}
+	}
+
+	void DFS(City& tmpCity){
+		int s = GetIdVertex(tmpCity);
+		if (s == -1){
+			throw "This vertex netu!";
+		}
+		std::vector<std::vector<int>>adj = AdjList();
+		std::vector<bool> visited(vertex.size(), false);
+		std::stack<int> stack;
+		stack.push(s);
+		while (!stack.empty()){
+			int s = stack.top();
+			stack.pop();
+			if (!visited[s]){
+				std::cout << "(**" << vertex[s].GetName() << "**)" << "->";
+				visited[s] = true;
+			}
+			for (auto i : adj[s]) {
+				if (!visited[i]) {
+					stack.push(i);
+				}
+			}
 		}
 	}
 };
