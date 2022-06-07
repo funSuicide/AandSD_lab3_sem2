@@ -46,7 +46,7 @@ public:
 		}
 		vertex.erase(vertex.begin() + index);
 		int indexEdge = -1;
-		for (int i = 0; i < edges.size(); ++i) {
+		for (int i = 0; i < edges.size(); i++) {
 			if (edges[i].edgeSource == index || edges[i].edgeDest == index){
 				indexEdge = i;
 				break;
@@ -67,8 +67,8 @@ public:
 	void DeleteEdge(City& sourceCity, City& destCity) {
 		int tmpSource = GetIdVertex(sourceCity);
 		int tmpDest = GetIdVertex(destCity);
-		for (int i = 0; i < edges.size(); ++i) {
-			if ((edges[i].edgeSource = tmpSource) && (edges[i].edgeDest = tmpDest)) {
+		for (int i = 0; i < edges.size(); i++) {
+			if ((edges[i].edgeSource == tmpSource) && (edges[i].edgeDest == tmpDest)) {
 				edges.erase(edges.begin() + i);
 				return;
 			}
@@ -89,10 +89,11 @@ public:
 		std::vector<std::vector<int>>adjList = AdjList();
 		for (int i = 0; i < adjList.size(); i++){
 			vertex[i].PrintCity();
+			std::cout << " ";
 			for (auto it : adjList[i]){
-				std::cout << "[ ";
+				std::cout << "[";
 				vertex[it].PrintCity();
-				std::cout << "LenghtWay: " << GetLenghWays(i, it) << " ]  ";
+				std::cout << " LenghtWay: " << GetLenghWays(i, it) << "]  ";
 			}
 			std::cout << std::endl;
 		}
@@ -111,7 +112,7 @@ public:
 			int s = stack.top();
 			stack.pop();
 			if (!visited[s]){
-				std::cout << "(**" << vertex[s].GetName() << "**)" << "->";
+				std::cout << "(" << vertex[s].GetName() << ")" << "->";
 				visited[s] = true;
 			}
 			for (auto i : adj[s]) {
@@ -124,14 +125,14 @@ public:
 
 	void BelmanFord(City& citySource, City& cityDes){
 		int INF = INT_MAX;
-		std::vector<int> vecFirst(vertex.size(), INF);
+		std::vector<int> vecFirst(vertex.size(), INF); //1. Расстояние от citySource до остальных вершин = бесконечности
 		int start = GetIdVertex(citySource);
-		int end = GetIdVertex(cityDes);
+		int end = GetIdVertex(cityDes);  //2. Проверка наличия источника и приемника
 		if (start == -1 || end == -1){
 			throw "Error!";
 		}
 
-		vecFirst[start] = 0;
+		vecFirst[start] = 0; //3. В случае citySource = 0
 		std::vector<int> vecSecond(vertex.size(), -1);
 		for (;;) {
 			bool any = false;
@@ -146,18 +147,20 @@ public:
 		}
 
 		if (vecFirst[end] == INF)
-			std::cout << "No path from (" << vertex[start].GetName() << ") to (" << vertex[end].GetName() << ").";
+			std::cout << "No path from " << vertex[start].GetName() << " to " << vertex[end].GetName() << ".";
 		else {
 			std::vector<int> path;
+			double summ = 0;
 			for (int cur = end; cur != -1; cur = vecSecond[cur]) {
 				path.push_back(cur);
 			}
 			reverse(path.begin(), path.end());
-			std::cout << "Path from (" << vertex[start].GetName() << ") to (" << vertex[end].GetName() << "):  ";
-			for (size_t i = 0; i < path.size(); ++i)
-				std::cout << "( " << vertex[path[i]].GetName() << " )-->";
+			std::cout << "Path from " << vertex[start].GetName() << " to " << vertex[end].GetName() << ": ";
+			for (size_t i = 0; i < path.size()-1; ++i)
+				std::cout << vertex[path[i]].GetName() << "-->";
+			std::cout << vertex[path.size() - 1].GetName();
 			std::cout << std::endl;
-			std::cout << "Summary lenght way is : " << vecSecond[end] << std::endl;
+			std::cout << "Summary lenght way is : " << vecSecond[end]+1 << std::endl;
 		}
 	}
 };
